@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blood Inventory | Blood Bank Management System</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="inventory">
+
+    <!-- ========== Sidebar ========== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-icon">BB</div>
+            <div class="brand-text">
+                <strong>Blood Bank</strong>
+                <small>Management System</small>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="dashboard.html"><span class="icon">&#9632;</span> Dashboard</a></li>
+            <li><a href="donors.html"><span class="icon">&#9786;</span> Donors</a></li>
+            <li><a href="inventory.html" class="active"><span class="icon">&#9673;</span> Blood Inventory</a></li>
+            <li><a href="requests.html"><span class="icon">&#9993;</span> Blood Requests</a></li>
+            <li><a href="donations.html"><span class="icon">&#10084;</span> Donations</a></li>
+            <li><a href="reports.html"><span class="icon">&#9776;</span> Reports</a></li>
+            <li><a href="#" id="sidebarLogout"><span class="icon">&#10162;</span> Logout</a></li>
+        </ul>
+        <div class="sidebar-footer">BCA Final Year Project<br>Frontend demo only</div>
+    </aside>
+    <div class="overlay" id="overlay"></div>
+
+    <!-- ========== Main area ========== -->
+    <div class="main">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="menu-toggle" id="menuToggle" aria-label="Open menu">&#9776;</button>
+                <h2>Blood Inventory</h2>
+            </div>
+            <div class="topbar-right">
+                <div class="admin-badge"><div class="admin-avatar">A</div><span class="name">Admin</span></div>
+                <button class="btn btn-outline btn-sm" id="logoutBtn">Logout</button>
+            </div>
+        </header>
+
+        <main class="content">
+            <div class="card">
+                <div class="card-body">
+                    <div class="toolbar" style="margin-bottom:0">
+                        <input type="text" id="inventorySearch" class="form-control search-input" placeholder="Search blood group, e.g. O+ or AB">
+                        <select id="inventoryStatusFilter" class="form-control">
+                            <option value="">All stock levels</option>
+                            <option value="ok">Available</option>
+                            <option value="low">Low stock</option>
+                            <option value="out">Out of stock</option>
+                        </select>
+                        <span class="spacer"></span>
+                        <span class="record-count" id="inventoryTotal"></span>
+                        <button class="btn btn-primary" id="addUnitsBtn">+ Add Blood Units</button>
+                    </div>
+                </div>
+            </div>
+            <div class="inventory-grid" id="inventoryGrid"></div>
+        </main>
+
+        <footer class="page-footer">
+            &copy; Blood Bank Management System &middot; BCA academic project. This is a frontend simulation with demo data &ndash; not a real hospital or medical system.
+        </footer>
+    </div>
+
+    <!-- ========== Add units modal ========== -->
+    <div class="modal" id="addUnitsModal">
+        <div class="modal-box small">
+            <div class="modal-header">
+                <h3>Add Blood Units</h3>
+                <button class="modal-close" data-close="addUnitsModal" aria-label="Close">&times;</button>
+            </div>
+            <form id="addUnitsForm" novalidate>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="addUnitsGroup">Blood Group *</label>
+                        <select id="addUnitsGroup" class="form-control">
+                            <option value="">Select blood group</option>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                        </select>
+                        <div class="error-text" id="addUnitsGroupError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="addUnitsCount">Units to Add * (1 - 100)</label>
+                        <input type="number" id="addUnitsCount" class="form-control" min="1" max="100" placeholder="e.g. 5">
+                        <div class="error-text" id="addUnitsCountError"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-close="addUnitsModal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Units</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========== Update stock modal ========== -->
+    <div class="modal" id="updateStockModal">
+        <div class="modal-box small">
+            <div class="modal-header">
+                <h3>Update Stock: <span id="updateStockGroupLabel"></span></h3>
+                <button class="modal-close" data-close="updateStockModal" aria-label="Close">&times;</button>
+            </div>
+            <form id="updateStockForm" novalidate>
+                <div class="modal-body">
+                    <input type="hidden" id="updateStockGroup">
+                    <div class="form-group">
+                        <label for="updateStockValue">Available Units * (0 - 500)</label>
+                        <input type="number" id="updateStockValue" class="form-control" min="0" max="500">
+                        <div class="error-text" id="updateStockValueError"></div>
+                    </div>
+                    <p class="record-count">Set the exact number of units currently available for this blood group.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-close="updateStockModal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update Stock</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========== Confirmation modal (used by all pages) ========== -->
+    <div class="modal" id="confirmModal">
+        <div class="modal-box small">
+            <div class="modal-header">
+                <h3 id="confirmTitle">Please Confirm</h3>
+                <button class="modal-close" data-close="confirmModal" aria-label="Close">&times;</button>
+            </div>
+            <div class="modal-body"><p id="confirmMessage">Are you sure?</p></div>
+            <div class="modal-footer">
+                <button class="btn btn-light" data-close="confirmModal">Cancel</button>
+                <button class="btn btn-primary" id="confirmYesBtn">Yes, Continue</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast notifications appear here -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="js/data.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>

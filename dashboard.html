@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Blood Bank Management System</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="dashboard">
+
+    <!-- ========== Sidebar ========== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-icon">BB</div>
+            <div class="brand-text">
+                <strong>Blood Bank</strong>
+                <small>Management System</small>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="dashboard.html" class="active"><span class="icon">&#9632;</span> Dashboard</a></li>
+            <li><a href="donors.html"><span class="icon">&#9786;</span> Donors</a></li>
+            <li><a href="inventory.html"><span class="icon">&#9673;</span> Blood Inventory</a></li>
+            <li><a href="requests.html"><span class="icon">&#9993;</span> Blood Requests</a></li>
+            <li><a href="donations.html"><span class="icon">&#10084;</span> Donations</a></li>
+            <li><a href="reports.html"><span class="icon">&#9776;</span> Reports</a></li>
+            <li><a href="#" id="sidebarLogout"><span class="icon">&#10162;</span> Logout</a></li>
+        </ul>
+        <div class="sidebar-footer">BCA Final Year Project<br>Frontend demo only</div>
+    </aside>
+    <div class="overlay" id="overlay"></div>
+
+    <!-- ========== Main area ========== -->
+    <div class="main">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="menu-toggle" id="menuToggle" aria-label="Open menu">&#9776;</button>
+                <h2>Dashboard</h2>
+            </div>
+            <div class="topbar-right">
+                <div class="admin-badge"><div class="admin-avatar">A</div><span class="name">Admin</span></div>
+                <button class="btn btn-outline btn-sm" id="logoutBtn">Logout</button>
+            </div>
+        </header>
+
+        <main class="content">
+            <!-- Statistic cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div><div class="label">Total Donors</div><div class="value" id="statDonors">0</div></div>
+                    <div class="stat-icon">&#9786;</div>
+                </div>
+                <div class="stat-card">
+                    <div><div class="label">Total Blood Units</div><div class="value" id="statUnits">0</div></div>
+                    <div class="stat-icon">&#9673;</div>
+                </div>
+                <div class="stat-card">
+                    <div><div class="label">Total Donations</div><div class="value" id="statDonations">0</div></div>
+                    <div class="stat-icon">&#10084;</div>
+                </div>
+                <div class="stat-card">
+                    <div><div class="label">Blood Requests</div><div class="value" id="statRequests">0</div></div>
+                    <div class="stat-icon">&#9993;</div>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <!-- Bar chart -->
+                <div class="card">
+                    <div class="card-header"><h3>Blood Stock Chart (Units)</h3></div>
+                    <div class="card-body">
+                        <div class="bar-chart" id="stockChart"></div>
+                        <div class="bar-labels" id="stockChartLabels"></div>
+                        <div class="chart-legend">
+                            <span><i style="background:#A61B29"></i>Available</span>
+                            <span><i style="background:#E0A3A9"></i>Low stock (5 units or less)</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Inventory summary -->
+                <div class="card">
+                    <div class="card-header"><h3>Inventory Summary</h3></div>
+                    <div class="card-body"><ul class="summary-list" id="inventorySummary"></ul></div>
+                </div>
+            </div>
+
+            <div class="grid-2-equal">
+                <div class="card">
+                    <div class="card-header"><h3>Blood Group-wise Stock</h3><a href="inventory.html" class="btn btn-light btn-sm">Manage</a></div>
+                    <div class="card-body"><div class="group-mini-grid" id="groupMiniGrid"></div></div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><h3>Low Stock Alerts</h3></div>
+                    <div class="card-body" id="lowStockAlerts"></div>
+                </div>
+            </div>
+
+            <div class="grid-2-equal">
+                <div class="card">
+                    <div class="card-header"><h3>Recent Donor Registrations</h3><a href="donors.html" class="btn btn-light btn-sm">View All</a></div>
+                    <div class="table-wrap">
+                        <table class="table">
+                            <thead><tr><th>ID</th><th>Name</th><th>Group</th><th>City</th><th>Registered</th></tr></thead>
+                            <tbody id="recentDonors"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><h3>Recent Blood Requests</h3><a href="requests.html" class="btn btn-light btn-sm">View All</a></div>
+                    <div class="table-wrap">
+                        <table class="table">
+                            <thead><tr><th>ID</th><th>Patient</th><th>Group</th><th>Units</th><th>Status</th></tr></thead>
+                            <tbody id="recentRequests"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="page-footer">
+            &copy; Blood Bank Management System &middot; BCA academic project. This is a frontend simulation with demo data &ndash; not a real hospital or medical system.
+        </footer>
+    </div>
+
+    <!-- ========== Confirmation modal (used by all pages) ========== -->
+    <div class="modal" id="confirmModal">
+        <div class="modal-box small">
+            <div class="modal-header">
+                <h3 id="confirmTitle">Please Confirm</h3>
+                <button class="modal-close" data-close="confirmModal" aria-label="Close">&times;</button>
+            </div>
+            <div class="modal-body"><p id="confirmMessage">Are you sure?</p></div>
+            <div class="modal-footer">
+                <button class="btn btn-light" data-close="confirmModal">Cancel</button>
+                <button class="btn btn-primary" id="confirmYesBtn">Yes, Continue</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast notifications appear here -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="js/data.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>

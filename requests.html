@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blood Requests | Blood Bank Management System</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="requests">
+
+    <!-- ========== Sidebar ========== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-icon">BB</div>
+            <div class="brand-text">
+                <strong>Blood Bank</strong>
+                <small>Management System</small>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="dashboard.html"><span class="icon">&#9632;</span> Dashboard</a></li>
+            <li><a href="donors.html"><span class="icon">&#9786;</span> Donors</a></li>
+            <li><a href="inventory.html"><span class="icon">&#9673;</span> Blood Inventory</a></li>
+            <li><a href="requests.html" class="active"><span class="icon">&#9993;</span> Blood Requests</a></li>
+            <li><a href="donations.html"><span class="icon">&#10084;</span> Donations</a></li>
+            <li><a href="reports.html"><span class="icon">&#9776;</span> Reports</a></li>
+            <li><a href="#" id="sidebarLogout"><span class="icon">&#10162;</span> Logout</a></li>
+        </ul>
+        <div class="sidebar-footer">BCA Final Year Project<br>Frontend demo only</div>
+    </aside>
+    <div class="overlay" id="overlay"></div>
+
+    <!-- ========== Main area ========== -->
+    <div class="main">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="menu-toggle" id="menuToggle" aria-label="Open menu">&#9776;</button>
+                <h2>Blood Requests</h2>
+            </div>
+            <div class="topbar-right">
+                <div class="admin-badge"><div class="admin-avatar">A</div><span class="name">Admin</span></div>
+                <button class="btn btn-outline btn-sm" id="logoutBtn">Logout</button>
+            </div>
+        </header>
+
+        <main class="content">
+            <div class="card">
+                <div class="card-header">
+                    <h3>All Blood Requests</h3>
+                    <span class="record-count" id="requestCount"></span>
+                </div>
+                <div class="card-body">
+                    <div class="toolbar">
+                        <input type="text" id="requestSearch" class="form-control search-input" placeholder="Search by ID, patient or hospital...">
+                        <select id="requestStatusFilter" class="form-control">
+                            <option value="">All statuses</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Approved">Approved</option>
+                            <option value="Rejected">Rejected</option>
+                            <option value="Fulfilled">Fulfilled</option>
+                        </select>
+                        <select id="requestGroupFilter" class="form-control">
+                            <option value="">All blood groups</option>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                        </select>
+                        <select id="requestPriorityFilter" class="form-control">
+                            <option value="">All priorities</option>
+                            <option value="Normal">Normal</option>
+                            <option value="High">High</option>
+                            <option value="Urgent">Urgent</option>
+                        </select>
+                        <span class="spacer"></span>
+                        <button class="btn btn-primary" id="addRequestBtn">+ New Request</button>
+                    </div>
+                    <div class="table-wrap">
+                        <table class="table">
+                            <thead>
+                                <tr><th>Request ID</th><th>Patient Name</th><th>Hospital</th><th>Blood Group</th><th>Units</th><th>Contact</th><th>Request Date</th><th>Priority</th><th>Status</th><th>Actions</th></tr>
+                            </thead>
+                            <tbody id="requestTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="page-footer">
+            &copy; Blood Bank Management System &middot; BCA academic project. This is a frontend simulation with demo data &ndash; not a real hospital or medical system.
+        </footer>
+    </div>
+
+    <!-- ========== New request modal ========== -->
+    <div class="modal" id="requestModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>New Blood Request</h3>
+                <button class="modal-close" data-close="requestModal" aria-label="Close">&times;</button>
+            </div>
+            <form id="requestForm" novalidate>
+                <div class="modal-body">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="reqPatient">Patient Name *</label>
+                            <input type="text" id="reqPatient" class="form-control" placeholder="e.g. Suresh Rao">
+                            <div class="error-text" id="reqPatientError"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="reqHospital">Hospital *</label>
+                            <input type="text" id="reqHospital" class="form-control" placeholder="e.g. City Care Hospital">
+                            <div class="error-text" id="reqHospitalError"></div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="reqGroup">Blood Group *</label>
+                            <select id="reqGroup" class="form-control">
+                            <option value="">Select blood group</option>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                        </select>
+                            <div class="error-text" id="reqGroupError"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="reqUnits">Required Units * (1 - 20)</label>
+                            <input type="number" id="reqUnits" class="form-control" min="1" max="20" placeholder="e.g. 2">
+                            <div class="error-text" id="reqUnitsError"></div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="reqContact">Contact * (10 digits)</label>
+                            <input type="text" id="reqContact" class="form-control" maxlength="10" placeholder="e.g. 9900112233">
+                            <div class="error-text" id="reqContactError"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="reqDate">Request Date *</label>
+                            <input type="date" id="reqDate" class="form-control">
+                            <div class="error-text" id="reqDateError"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="reqPriority">Priority *</label>
+                        <select id="reqPriority" class="form-control">
+                            <option value="Normal">Normal</option>
+                            <option value="High">High</option>
+                            <option value="Urgent">Urgent</option>
+                        </select>
+                    </div>
+                    <p class="record-count">New requests start with status <strong>Pending</strong>.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-close="requestModal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create Request</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========== Confirmation modal (used by all pages) ========== -->
+    <div class="modal" id="confirmModal">
+        <div class="modal-box small">
+            <div class="modal-header">
+                <h3 id="confirmTitle">Please Confirm</h3>
+                <button class="modal-close" data-close="confirmModal" aria-label="Close">&times;</button>
+            </div>
+            <div class="modal-body"><p id="confirmMessage">Are you sure?</p></div>
+            <div class="modal-footer">
+                <button class="btn btn-light" data-close="confirmModal">Cancel</button>
+                <button class="btn btn-primary" id="confirmYesBtn">Yes, Continue</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast notifications appear here -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="js/data.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>

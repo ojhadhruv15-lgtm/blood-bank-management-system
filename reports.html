@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports | Blood Bank Management System</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="reports">
+
+    <!-- ========== Sidebar ========== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-icon">BB</div>
+            <div class="brand-text">
+                <strong>Blood Bank</strong>
+                <small>Management System</small>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="dashboard.html"><span class="icon">&#9632;</span> Dashboard</a></li>
+            <li><a href="donors.html"><span class="icon">&#9786;</span> Donors</a></li>
+            <li><a href="inventory.html"><span class="icon">&#9673;</span> Blood Inventory</a></li>
+            <li><a href="requests.html"><span class="icon">&#9993;</span> Blood Requests</a></li>
+            <li><a href="donations.html"><span class="icon">&#10084;</span> Donations</a></li>
+            <li><a href="reports.html" class="active"><span class="icon">&#9776;</span> Reports</a></li>
+            <li><a href="#" id="sidebarLogout"><span class="icon">&#10162;</span> Logout</a></li>
+        </ul>
+        <div class="sidebar-footer">BCA Final Year Project<br>Frontend demo only</div>
+    </aside>
+    <div class="overlay" id="overlay"></div>
+
+    <!-- ========== Main area ========== -->
+    <div class="main">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="menu-toggle" id="menuToggle" aria-label="Open menu">&#9776;</button>
+                <h2>Reports</h2>
+            </div>
+            <div class="topbar-right">
+                <div class="admin-badge"><div class="admin-avatar">A</div><span class="name">Admin</span></div>
+                <button class="btn btn-outline btn-sm" id="logoutBtn">Logout</button>
+            </div>
+        </header>
+
+        <main class="content">
+            <div class="toolbar no-print">
+                <button class="btn btn-primary" id="printReportBtn">&#128438; Print Report</button>
+                <button class="btn btn-light" id="resetDataBtn">Reset Demo Data</button>
+            </div>
+
+            <div class="report-header">
+                <h2>Blood Bank Summary Report</h2>
+                <p id="reportDate"></p>
+                <p class="print-only">Academic frontend demo &ndash; sample data only, not a real medical record.</p>
+            </div>
+
+            <div class="stats-grid" id="reportStats"></div>
+
+            <div class="grid-2-equal">
+                <div class="card">
+                    <div class="card-header"><h3>Blood Group-wise Inventory</h3></div>
+                    <div class="table-wrap">
+                        <table class="table">
+                            <thead><tr><th>Blood Group</th><th>Available Units</th><th>Donations</th><th>Stock Status</th></tr></thead>
+                            <tbody id="reportInventory"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><h3>Blood Requests by Status</h3></div>
+                    <div class="table-wrap">
+                        <table class="table">
+                            <thead><tr><th>Status</th><th>Number of Requests</th><th>Units Requested</th></tr></thead>
+                            <tbody id="reportRequests"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="page-footer">
+            &copy; Blood Bank Management System &middot; BCA academic project. This is a frontend simulation with demo data &ndash; not a real hospital or medical system.
+        </footer>
+    </div>
+
+    <!-- ========== Confirmation modal (used by all pages) ========== -->
+    <div class="modal" id="confirmModal">
+        <div class="modal-box small">
+            <div class="modal-header">
+                <h3 id="confirmTitle">Please Confirm</h3>
+                <button class="modal-close" data-close="confirmModal" aria-label="Close">&times;</button>
+            </div>
+            <div class="modal-body"><p id="confirmMessage">Are you sure?</p></div>
+            <div class="modal-footer">
+                <button class="btn btn-light" data-close="confirmModal">Cancel</button>
+                <button class="btn btn-primary" id="confirmYesBtn">Yes, Continue</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast notifications appear here -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="js/data.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>
